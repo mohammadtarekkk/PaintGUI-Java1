@@ -20,6 +20,9 @@ public abstract class Shape implements Cloneable {
             throw new AssertionError(); 
         }
     }
+    public Shape() {
+        super();
+    }
     public Shape(int xStarting, int yStarting,int currentX, int currentY , String style, Color color ) {
         this.xStarting = xStarting;
         this.yStarting = yStarting;
