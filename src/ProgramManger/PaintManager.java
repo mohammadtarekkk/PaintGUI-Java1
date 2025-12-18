@@ -33,7 +33,7 @@ public class PaintManager extends JPanel {
 
     public PaintManager() {
         initializeVariables();
-
+        initializeEvents();
     }
 
     public void runApp() {
@@ -47,12 +47,6 @@ public class PaintManager extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
         frame.setVisible(true);
-    }
-
-    public void addShape(String type) {
-        Shape shape = ShapeFactory.createShape(type);
-        shapes.add(shape);
-        repaint();
     }
 
     @Override
