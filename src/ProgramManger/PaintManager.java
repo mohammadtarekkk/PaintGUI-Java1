@@ -26,6 +26,7 @@ public class PaintManager extends JPanel {
     private JButton btnEraser;
     private JButton btnColorPicker;
     private JButton btnClear;
+    private JButton btnUndo;
 
     private JCheckBox fillOption;
     private Color currentColor;
@@ -76,6 +77,7 @@ public class PaintManager extends JPanel {
 
         fillOption = new JCheckBox("Fill");
         btnClear = new JButton("Clear");
+        btnUndo = new JButton("Undo");
         currentColor = Color.BLACK;
 
         setBackground(Color.WHITE);
@@ -89,6 +91,7 @@ public class PaintManager extends JPanel {
         this.add(btnColorPicker);
         this.add(fillOption);
         this.add(btnClear);
+        this.add(btnUndo);
     }
 
     private void initializeEvents() {
@@ -167,6 +170,16 @@ public class PaintManager extends JPanel {
                 shapes.clear();
                 shapeContext.setShape(null);
                 repaint();
+            }
+        });
+        btnUndo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!shapes.isEmpty()) {
+                    shapes.remove(shapes.size() - 1);
+                    shapeContext.setShape(null);
+                    repaint();
+                }
             }
         });
 
