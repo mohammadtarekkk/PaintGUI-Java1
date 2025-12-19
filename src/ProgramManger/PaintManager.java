@@ -55,6 +55,9 @@ public class PaintManager extends JPanel {
         for (Shape s : shapes) {
             s.drawShape(g);
         }
+        if (shapeContext.getShape() != null) {
+            shapeContext.getShape().drawShape(g);
+        }
     }
 
     private void initializeVariables() {
@@ -171,6 +174,7 @@ public class PaintManager extends JPanel {
                 shape.setCurrentX(e.getX());
                 shape.setCurrentY(e.getY());
                 shape.setColor(currentColor);
+                shape.setFilled(fillOption.isSelected());
 
                 repaint();
             }
