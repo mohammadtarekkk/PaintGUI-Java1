@@ -74,6 +74,15 @@ public class PaintManager extends JPanel {
         currentColor = Color.BLACK;
 
         setBackground(Color.WHITE);
+
+        this.add(btnRectangle);
+        this.add(btnSquare);
+        this.add(btnOval);
+        this.add(btnLine);
+        this.add(btnPencil);
+        this.add(btnEraser);
+        this.add(btnColorPicker);
+        this.add(fillOption);
     }
 
     private void initializeEvents() {
