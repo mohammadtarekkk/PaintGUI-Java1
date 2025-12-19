@@ -16,7 +16,7 @@ public class PaintManager extends JPanel {
     private ShapeFactory shapeFactory;
     private ShapeContext shapeContext;
     private ArrayList<Shape> shapes;
-
+    private ArrayList<Shape> redoStack = new ArrayList<>();
 
     private JButton btnRectangle;
     private JButton btnSquare;
@@ -27,9 +27,11 @@ public class PaintManager extends JPanel {
     private JButton btnColorPicker;
     private JButton btnClear;
     private JButton btnUndo;
+    private JButton btnRedo;
 
     private JCheckBox fillOption;
     private Color currentColor;
+
 
 
 
@@ -78,6 +80,7 @@ public class PaintManager extends JPanel {
         fillOption = new JCheckBox("Fill");
         btnClear = new JButton("Clear");
         btnUndo = new JButton("Undo");
+        btnRedo = new JButton("Redo");
         currentColor = Color.BLACK;
 
         setBackground(Color.WHITE);
@@ -92,6 +95,7 @@ public class PaintManager extends JPanel {
         this.add(fillOption);
         this.add(btnClear);
         this.add(btnUndo);
+        this.add(btnRedo);
     }
 
     private void initializeEvents() {
@@ -170,19 +174,29 @@ public class PaintManager extends JPanel {
                 shapes.clear();
                 shapeContext.setShape(null);
                 repaint();
+                redoStack.clear();
             }
         });
         btnUndo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!shapes.isEmpty()) {
-                    shapes.remove(shapes.size() - 1);
+                    redoStack.add(shapes.remove(shapes.size() - 1));
                     shapeContext.setShape(null);
                     repaint();
                 }
             }
         });
-
+        btnRedo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!redoStack.isEmpty()) {
+                    shapes.add(redoStack.remove(redoStack.size() - 1));
+                    shapeContext.setShape(null);
+                    repaint();
+                }
+            }
+        });
 
         addMouseListener(new MouseAdapter() {
 
@@ -216,7 +230,7 @@ public class PaintManager extends JPanel {
                 shape.setCurrentY(e.getY());
 
                 shapes.add(shape);
-
+                redoStack.clear();
                 Shape newShape = shape.clone();
                 shapeContext.setShape(newShape);
 
