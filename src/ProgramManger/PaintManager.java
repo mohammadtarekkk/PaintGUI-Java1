@@ -71,7 +71,7 @@ public class PaintManager extends JPanel {
         btnColorPicker = new JButton("Color");
 
         fillOption = new JCheckBox("Fill");
-        currentColor = shapeContext.getShape().getColor();
+        currentColor = Color.BLACK;
 
         setBackground(Color.WHITE);
 
