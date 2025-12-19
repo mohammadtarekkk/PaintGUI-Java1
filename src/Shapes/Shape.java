@@ -11,6 +11,7 @@ public abstract class Shape implements Cloneable {
 
     protected String style;
     protected Color color;
+    protected boolean isFilled;
 
     @Override
     public Shape clone() {
@@ -23,13 +24,14 @@ public abstract class Shape implements Cloneable {
     public Shape() {
         super();
     }
-    public Shape(int xStarting, int yStarting,int currentX, int currentY , String style, Color color ) {
+    public Shape(int xStarting, int yStarting,int currentX, int currentY , String style, Color color, boolean isFilled ) {
         this.xStarting = xStarting;
         this.yStarting = yStarting;
         this.currentX = currentX;
         this.currentY = currentY;
         this.style = style;
         this.color = color;
+        this.isFilled = isFilled;
     }
     
     public int getXStarting() {
@@ -78,6 +80,14 @@ public abstract class Shape implements Cloneable {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public boolean isFilled() {
+        return isFilled;
+    }
+
+    public void setFilled(boolean isFilled) {
+        this.isFilled = isFilled;
     }
 
 
