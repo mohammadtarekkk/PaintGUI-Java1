@@ -5,18 +5,18 @@ public class ShapeFactory {
 
     public static Shape createShape(String type) {
 
-        switch (type.toLowerCase()) {
-            case "rectangle":
+        switch (type) {
+            case "Shapes.Rectangle":
                 return new Rectangle();
-            case "square":
+            case "Shapes.Square":
                 return new Square();
-            case "oval":
+            case "Shapes.Oval":
                 return new Oval();
-            case "line":
+            case "Shapes.Line":
                 return new Line();
-            case "pencil":
+            case "Shapes.Pencil":
                 return new Pencil();
-            case "eraser":
+            case "Shapes.Eraser":
                 return new Eraser();
             default:
                 return null;
