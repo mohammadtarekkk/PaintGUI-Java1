@@ -2,6 +2,7 @@ package Shapes;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public abstract class Shape implements Cloneable {
     protected int xStarting;
@@ -11,6 +12,9 @@ public abstract class Shape implements Cloneable {
 
     protected String style;
     protected Color color;
+    protected boolean isFilled;
+    protected boolean isDotted;
+
 
     @Override
     public Shape clone() {
@@ -23,13 +27,15 @@ public abstract class Shape implements Cloneable {
     public Shape() {
         super();
     }
-    public Shape(int xStarting, int yStarting,int currentX, int currentY , String style, Color color ) {
+    public Shape(int xStarting, int yStarting,int currentX, int currentY , String style, Color color, boolean isFilled , boolean isDotted) {
         this.xStarting = xStarting;
         this.yStarting = yStarting;
         this.currentX = currentX;
         this.currentY = currentY;
         this.style = style;
         this.color = color;
+        this.isFilled = isFilled;
+        this.isDotted = isDotted;
     }
     
     public int getXStarting() {
@@ -56,6 +62,13 @@ public abstract class Shape implements Cloneable {
         return color;
     }
 
+    public boolean isFilled() {
+        return isFilled;
+    }
+
+    public boolean isDotted(){
+        return isDotted;
+    }
     public void setXStarting(int xStarting) {
         this.xStarting = xStarting;
     }
@@ -78,6 +91,29 @@ public abstract class Shape implements Cloneable {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+
+    public void setFilled(boolean isFilled) {
+        this.isFilled = isFilled;
+    }
+
+    public void setDotted(boolean isDotted){
+        this.isDotted = isDotted;
+    }
+
+
+    public ArrayList<Shape> makeDragAction(ArrayList<Shape> shapes, int currentX, int currentY, Shape currShape) {
+        if (shapes == null || shapes.isEmpty() || currShape == null){
+            shapes.add(currShape);
+        }
+
+        currShape.setCurrentX(currentX);
+        currShape.setCurrentY(currentY);
+
+        shapes.set(shapes.size() - 1, currShape);
+
+        return shapes;
     }
 
 
