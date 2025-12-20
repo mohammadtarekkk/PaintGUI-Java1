@@ -32,7 +32,7 @@ public class PaintManager extends JPanel {
     private JButton btnRedo;
     private JButton imageExporter;
 
-
+    private JSlider strokeWidthSlider;
     private JCheckBox fillOption;
     private JCheckBox dottedOption;
 
@@ -93,6 +93,8 @@ public class PaintManager extends JPanel {
         btnUndo = new JButton("Undo");
         btnRedo = new JButton("Redo");
         imageExporter = new JButton("Export to image");
+        strokeWidthSlider = new JSlider(JSlider.HORIZONTAL, 1, 20, 1);
+
 
 
         btnSave = new JButton("Save");
@@ -116,6 +118,7 @@ public class PaintManager extends JPanel {
         this.add(imageExporter);
         this.add(btnSave);
         this.add(btnLoad);
+        this.add(strokeWidthSlider);
     }
 
     private void initializeEvents() {
@@ -261,6 +264,7 @@ public class PaintManager extends JPanel {
                 shape.setColor(currentColor);
                 shape.setFilled(fillOption.isSelected());
                 shape.setDotted(dottedOption.isSelected());
+                shape.setStrokeWidth(strokeWidthSlider.getValue());
 
                 repaint();
             }
