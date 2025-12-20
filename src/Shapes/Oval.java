@@ -21,6 +21,7 @@ public class Oval extends Shape {
         if (isFilled()) {
             g.fillOval(x, y, width, height);
         } else {
+            ((Graphics2D) g).setStroke(new BasicStroke(getStrokeWidth()));
 
             if(!isDotted())
                 g.drawOval(x, y, width, height);
@@ -28,9 +29,9 @@ public class Oval extends Shape {
             else{
                 Graphics2D g2 = (Graphics2D) g; 
                 g2.setColor(getColor());
-                float[] dashPattern = {5f, 5f}; 
+                float[] dashPattern = {getStrokeWidth(), getStrokeWidth()}; 
                 Stroke oldStroke = g2.getStroke(); 
-                g2.setStroke(new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dashPattern, 0f));
+                g2.setStroke(new BasicStroke(getStrokeWidth(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dashPattern, 0f));
                 g.drawOval(x, y, width, height);
                 g2.setStroke(oldStroke);
             }

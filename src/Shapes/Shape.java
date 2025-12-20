@@ -14,6 +14,7 @@ public abstract class Shape implements Cloneable {
     protected Color color;
     protected boolean isFilled;
     protected boolean isDotted;
+    protected int strokeWidth;
 
 
     @Override
@@ -27,7 +28,7 @@ public abstract class Shape implements Cloneable {
     public Shape() {
         super();
     }
-    public Shape(int xStarting, int yStarting,int currentX, int currentY , String style, Color color, boolean isFilled , boolean isDotted) {
+    public Shape(int xStarting, int yStarting,int currentX, int currentY , String style, Color color, boolean isFilled , boolean isDotted, int strokeWidth) {
         this.xStarting = xStarting;
         this.yStarting = yStarting;
         this.currentX = currentX;
@@ -36,6 +37,7 @@ public abstract class Shape implements Cloneable {
         this.color = color;
         this.isFilled = isFilled;
         this.isDotted = isDotted;
+        this.strokeWidth = strokeWidth;
     }
     
     public int getXStarting() {
@@ -60,6 +62,9 @@ public abstract class Shape implements Cloneable {
 
     public Color getColor() {
         return color;
+    }
+    public int getStrokeWidth() {
+        return strokeWidth;
     }
 
     public boolean isFilled() {
@@ -101,7 +106,9 @@ public abstract class Shape implements Cloneable {
     public void setDotted(boolean isDotted){
         this.isDotted = isDotted;
     }
-
+    public void setStrokeWidth(int strokeWidth) {
+        this.strokeWidth = strokeWidth;
+    }
 
     public ArrayList<Shape> makeDragAction(ArrayList<Shape> shapes, int currentX, int currentY, Shape currShape) {
         if (shapes == null || shapes.isEmpty() || currShape == null){

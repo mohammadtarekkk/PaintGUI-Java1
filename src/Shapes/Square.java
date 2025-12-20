@@ -18,14 +18,15 @@ public class Square extends Shape{
         if (isFilled()) {
             g.fillRect(x, y, width, width);
         } else {
+            ((Graphics2D) g).setStroke(new BasicStroke(getStrokeWidth()));
             if(!isDotted())
                 g.drawRect(x, y, width, width);
             else{
                 Graphics2D g2 = (Graphics2D) g; 
                 g2.setColor(getColor());
-                float[] dashPattern = {5f, 5f}; 
+                float[] dashPattern = {getStrokeWidth(), getStrokeWidth()}; 
                 Stroke oldStroke = g2.getStroke(); 
-                g2.setStroke(new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dashPattern, 0f));
+                g2.setStroke(new BasicStroke(getStrokeWidth(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dashPattern, 0f));
                 g2.drawRect(x, y, width, width);
                 g2.setStroke(oldStroke);
             }
