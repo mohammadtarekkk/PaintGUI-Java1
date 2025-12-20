@@ -1,4 +1,6 @@
 package ProgramManger;
+import FilesManger.FileManger;
+import PanelExporter.ImageExporter;
 import ShapeChanger.ShapeContext;
 import ShapeCreater.ShapeFactory;
 import Shapes.Shape;
@@ -16,7 +18,7 @@ public class PaintManager extends JPanel {
     private ShapeFactory shapeFactory;
     private ShapeContext shapeContext;
     private ArrayList<Shape> shapes;
-    private ArrayList<Shape> redoStack = new ArrayList<>();
+    private ArrayList<Shape> redoStack;
 
     private JButton btnRectangle;
     private JButton btnSquare;
@@ -28,9 +30,16 @@ public class PaintManager extends JPanel {
     private JButton btnClear;
     private JButton btnUndo;
     private JButton btnRedo;
+    private JButton imageExporter;
+
 
     private JCheckBox fillOption;
+    private JCheckBox dottedOption;
+
     private Color currentColor;
+
+    private JButton btnSave;
+    private JButton btnLoad;
 
 
 
@@ -76,11 +85,18 @@ public class PaintManager extends JPanel {
         btnPencil = new JButton("Pencil");
         btnEraser = new JButton("Eraser");
         btnColorPicker = new JButton("Color");
-
+        redoStack = new ArrayList<>();
         fillOption = new JCheckBox("Fill");
+        dottedOption = new JCheckBox("Dotted");
+
         btnClear = new JButton("Clear");
         btnUndo = new JButton("Undo");
         btnRedo = new JButton("Redo");
+        imageExporter = new JButton("Export to image");
+
+
+        btnSave = new JButton("Save");
+        btnLoad = new JButton("Load Shape");
         currentColor = Color.BLACK;
 
         setBackground(Color.WHITE);
@@ -93,9 +109,13 @@ public class PaintManager extends JPanel {
         this.add(btnEraser);
         this.add(btnColorPicker);
         this.add(fillOption);
+        this.add(dottedOption);
         this.add(btnClear);
         this.add(btnUndo);
         this.add(btnRedo);
+        this.add(imageExporter);
+        this.add(btnSave);
+        this.add(btnLoad);
     }
 
     private void initializeEvents() {
@@ -104,7 +124,7 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 shapeContext.setShape(
-                    ShapeFactory.createShape("rectangle")
+                    ShapeFactory.createShape("Shapes.Rectangle")
                 );
             }
         });
@@ -113,7 +133,7 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 shapeContext.setShape(
-                    ShapeFactory.createShape("square")
+                    ShapeFactory.createShape("Shapes.Square")
                 );
             }
         });
@@ -122,7 +142,7 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 shapeContext.setShape(
-                    ShapeFactory.createShape("oval")
+                    ShapeFactory.createShape("Shapes.Oval")
                 );
             }
         });
@@ -131,7 +151,7 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 shapeContext.setShape(
-                    ShapeFactory.createShape("line")
+                    ShapeFactory.createShape("Shapes.Line")
                 );
             }
         });
@@ -140,7 +160,7 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 shapeContext.setShape(
-                    ShapeFactory.createShape("pencil")
+                    ShapeFactory.createShape("Shapes.Pencil")
                 );
             }
         });
@@ -149,7 +169,7 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 shapeContext.setShape(
-                    ShapeFactory.createShape("eraser")
+                    ShapeFactory.createShape("Shapes.Eraser")
                 );
             }
         });
@@ -198,11 +218,37 @@ public class PaintManager extends JPanel {
             }
         });
 
+        btnSave.addActionListener( new ActionListener() {
+            @Override
+            public  void actionPerformed(ActionEvent e){
+                FileManger.savePanel(shapes , PaintManager.this);
+            }
+            
+        });
+
+        btnLoad.addActionListener( new ActionListener() {
+            @Override
+            public  void actionPerformed(ActionEvent e){
+                shapes = FileManger.loadShapes(PaintManager.this);
+                repaint();
+            }
+            
+        });
+
+        imageExporter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ImageExporter.savePanelAsImage(PaintManager.this);
+            }
+        });
+
+        //Mouse events
         addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
 
+                
                 if (shapeContext.getShape() == null)
                     return;
 
@@ -214,6 +260,7 @@ public class PaintManager extends JPanel {
                 shape.setCurrentY(e.getY());
                 shape.setColor(currentColor);
                 shape.setFilled(fillOption.isSelected());
+                shape.setDotted(dottedOption.isSelected());
 
                 repaint();
             }
@@ -246,10 +293,7 @@ public class PaintManager extends JPanel {
                 if (shapeContext.getShape() == null)
                     return;
 
-                Shape shape = shapeContext.getShape();
-                shape.setCurrentX(e.getX());
-                shape.setCurrentY(e.getY());
-
+                shapes = shapeContext.getShape().makeDragAction(shapes, e.getX(), e.getY() , shapeContext.getShape());
                 repaint();
             }
         });

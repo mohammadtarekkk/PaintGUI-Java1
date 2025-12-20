@@ -1,16 +1,14 @@
 package Shapes;
-import java.awt.Color;
+import java.awt.BasicStroke;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 public class Rectangle extends Shape {
 
     public Rectangle() {
         super();
     }
-    public Rectangle(int xStarting, int yStarting,int currentX, int currentY , String style, Color color, boolean isFilled ) {
-        super(xStarting,yStarting,currentX,currentY,style,color, isFilled);
-    }
-
     
     @Override
     public void drawShape(Graphics g) {
@@ -22,7 +20,18 @@ public class Rectangle extends Shape {
         if (isFilled()) {
             g.fillRect(x, y, width, height);
         } else {
-            g.drawRect(x, y, width, height);
+            if(!isDotted())
+                g.drawRect(x, y, width, height);
+            else{
+                Graphics2D g2 = (Graphics2D) g; 
+                g2.setColor(getColor());
+                float[] dashPattern = {5f, 5f}; 
+                Stroke oldStroke = g2.getStroke(); 
+                g2.setStroke(new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dashPattern, 0f));
+                g2.drawRect(x, y, width, height);
+                g2.setStroke(oldStroke);
+
+            }
         }
     }
 }
