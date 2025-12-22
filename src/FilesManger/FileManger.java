@@ -46,6 +46,8 @@ public class FileManger {
             while ((line = reader.readLine()) != null) {
                 Shape shape = parseShapeLine(line);
                 if (shape != null) shapes.add(shape);
+                else
+                    shapes.add(null);
             }
 
             if (shapes.isEmpty())
@@ -116,9 +118,13 @@ public class FileManger {
 
     private static void writeShapesToFile(ArrayList<Shape> shapes, BufferedWriter writer) {
         try {
-            for (Shape shape : shapes) {
-                if (shape != null) {
-                    writer.write(shapeToLine(shape) + "\n");
+            for (int i = 0; i < shapes.size(); i++) {
+                if(shapes.get(i) != null){
+                    writer.write(shapeToLine(shapes.get(i)) + "\n");
+                }
+                else{
+                    writer.write("null\n");
+
                 }
             }
         } catch (Exception ex) {
