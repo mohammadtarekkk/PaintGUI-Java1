@@ -66,11 +66,10 @@ public class PaintManager extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (Shape s : shapes) {
-            s.drawShape(g);
+            if(s != null)
+                s.drawShape(g);
         }
-        if (shapeContext.getShape() != null) {
-            shapeContext.getShape().drawShape(g);
-        }
+
     }
 
     private void initializeVariables() {
@@ -204,8 +203,20 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!shapes.isEmpty()) {
-                    redoStack.add(shapes.remove(shapes.size() - 1));
-                    shapeContext.setShape(null);
+                    int i = shapes.size()-1;
+                    if(i > 0)
+                        redoStack.add(null);
+                    while (i >= 0) {
+                        shapeContext.setShape(null);
+                        if(shapes.get(i) == null ){
+                            shapes.remove(i);
+                            break;
+                        }
+                        redoStack.add(shapes.remove(i));
+                        i = shapes.size()-1;
+
+                    }
+
                     repaint();
                 }
             }
@@ -214,8 +225,22 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!redoStack.isEmpty()) {
-                    shapes.add(redoStack.remove(redoStack.size() - 1));
-                    shapeContext.setShape(null);
+
+                    int i = redoStack.size()-1;
+                    if(i> 0)
+                        shapes.add(null);
+                    while (i > 0) {
+                        shapeContext.setShape(null);
+                        if(redoStack.get(i) == null ){
+                            
+                            redoStack.remove(i);
+                            break;
+                        }
+                        shapes.add(redoStack.remove(i));
+                        i = redoStack.size()-1;
+
+                    }
+
                     repaint();
                 }
             }
@@ -255,6 +280,7 @@ public class PaintManager extends JPanel {
                 if (shapeContext.getShape() == null)
                     return;
 
+
                 Shape shape = shapeContext.getShape();
 
                 shape.setXStarting(e.getX());
@@ -265,7 +291,8 @@ public class PaintManager extends JPanel {
                 shape.setFilled(fillOption.isSelected());
                 shape.setDotted(dottedOption.isSelected());
                 shape.setStrokeWidth(strokeWidthSlider.getValue());
-
+                shapes.add(null);
+                shapes.add(shape);
                 repaint();
             }
 
@@ -280,8 +307,7 @@ public class PaintManager extends JPanel {
                 shape.setCurrentX(e.getX());
                 shape.setCurrentY(e.getY());
 
-                shapes.add(shape);
-                redoStack.clear();
+
                 Shape newShape = shape.clone();
                 shapeContext.setShape(newShape);
 
