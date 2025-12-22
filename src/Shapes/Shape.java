@@ -111,10 +111,7 @@ public abstract class Shape implements Cloneable {
     }
 
     public ArrayList<Shape> makeDragAction(ArrayList<Shape> shapes, int currentX, int currentY, Shape currShape) {
-        if (shapes == null || shapes.isEmpty() || currShape == null){
-            shapes.add(currShape);
-        }
-
+        
         currShape.setCurrentX(currentX);
         currShape.setCurrentY(currentY);
 
