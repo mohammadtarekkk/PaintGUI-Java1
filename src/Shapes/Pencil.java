@@ -35,6 +35,10 @@ public class Pencil extends Shape {
     public void drawShape(Graphics g) {
         g.setColor(getColor());
         ((Graphics2D) g).setStroke(new BasicStroke(getStrokeWidth()));
+        if (isDotted()) {
+            float[] dash = { 2f, 0f, 2f };
+            ((Graphics2D) g).setStroke(new BasicStroke(getStrokeWidth(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dash, 0f));
+        }
         g.drawLine(getXStarting(), getYStarting(), getCurrentX(), getCurrentY());
     }
 }
