@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.awt.RenderingHints;
 
 public class Pencil extends Shape {
 
@@ -32,13 +33,21 @@ public class Pencil extends Shape {
     }
 
     @Override
-    public void drawShape(Graphics g) {
-        g.setColor(getColor());
-        ((Graphics2D) g).setStroke(new BasicStroke(getStrokeWidth()));
-        if (isDotted()) {
-            float[] dash = { 2f, 0f, 2f };
-            ((Graphics2D) g).setStroke(new BasicStroke(getStrokeWidth(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dash, 0f));
-        }
-        g.drawLine(getXStarting(), getYStarting(), getCurrentX(), getCurrentY());
+public void drawShape(Graphics g) {
+    Graphics2D g2d = (Graphics2D) g;
+
+    // This is for Smoothing
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    
+    g2d.setColor(getColor());
+    
+    if (isDotted()) {
+        float[] dash = { 2f, 0f, 2f };
+        g2d.setStroke(new BasicStroke(getStrokeWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10f, dash, 0f));
+    } else {
+        g2d.setStroke(new BasicStroke(getStrokeWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
     }
+    
+    g2d.drawLine(getXStarting(), getYStarting(), getCurrentX(), getCurrentY());
+}
 }
