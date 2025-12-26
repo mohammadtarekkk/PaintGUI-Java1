@@ -1,4 +1,5 @@
 package ProgramManger;
+import UIFactory.ButtonFactory;
 import FilesManger.FileManger;
 import PanelExporter.ImageExporter;
 import ShapeChanger.ShapeContext;
@@ -12,6 +13,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class PaintManager extends JPanel {
 
@@ -32,9 +35,12 @@ public class PaintManager extends JPanel {
     private JButton btnRedo;
     private JButton imageExporter;
 
+    private JSlider strokeWidthSlider;
+    private JToggleButton fillOption;
+    private JToggleButton dottedOption;
+    private BufferedImage backgroundImage;
+    private JButton btnAddImage;
 
-    private JCheckBox fillOption;
-    private JCheckBox dottedOption;
 
     private Color currentColor;
 
@@ -65,12 +71,14 @@ public class PaintManager extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 200, 200, 200, 200, null); 
+        }
         for (Shape s : shapes) {
-            s.drawShape(g);
+            if(s != null)
+                s.drawShape(g);
         }
-        if (shapeContext.getShape() != null) {
-            shapeContext.getShape().drawShape(g);
-        }
+
     }
 
     private void initializeVariables() {
@@ -78,26 +86,28 @@ public class PaintManager extends JPanel {
         shapeContext = new ShapeContext(null);
         shapes = new ArrayList<>();
 
-        btnRectangle = new JButton("Rectangle");
-        btnSquare = new JButton("Square");
-        btnOval = new JButton("Oval");
-        btnLine = new JButton("Line");
-        btnPencil = new JButton("Pencil");
-        btnEraser = new JButton("Eraser");
-        btnColorPicker = new JButton("Color");
-        redoStack = new ArrayList<>();
-        fillOption = new JCheckBox("Fill");
-        dottedOption = new JCheckBox("Dotted");
-
-        btnClear = new JButton("Clear");
-        btnUndo = new JButton("Undo");
-        btnRedo = new JButton("Redo");
-        imageExporter = new JButton("Export to image");
-
-
-        btnSave = new JButton("Save");
-        btnLoad = new JButton("Load Shape");
+        btnRectangle = ButtonFactory.createIconButton("/resources/icons/rectangle.png", "Rectangle", 30);
+        btnSquare = ButtonFactory.createIconButton("/resources/icons/square.png", "Square", 30);
+        btnOval = ButtonFactory.createIconButton("/resources/icons/oval.png", "Oval", 30);
+        btnLine = ButtonFactory.createIconButton("/resources/icons/line.png", "Line", 30);
+        btnPencil = ButtonFactory.createIconButton("/resources/icons/pencil.png", "Pencil", 30);
+        btnEraser = ButtonFactory.createIconButton("/resources/icons/eraser.png", "Eraser", 30);
+        btnColorPicker = ButtonFactory.createIconButton("/resources/icons/color.png", "Color", 30);
+        btnClear = ButtonFactory.createIconButton("/resources/icons/clear.png", "Clear", 30);
+        btnUndo = ButtonFactory.createIconButton("/resources/icons/undo.png", "Undo", 30);
+        btnRedo = ButtonFactory.createIconButton("/resources/icons/redo.png", "Redo", 30);
+        imageExporter = ButtonFactory.createIconButton("/resources/icons/export.png", "Export to image", 30);
+        btnSave = ButtonFactory.createIconButton("/resources/icons/save.png", "Save", 30);
+        btnLoad = ButtonFactory.createIconButton("/resources/icons/load.png", "Load Shape", 30);
+        fillOption = ButtonFactory.createToggleButton("/resources/icons/fill_off.png", "/resources/icons/fill.png", "Fill", 30);
+        dottedOption = ButtonFactory.createToggleButton("/resources/icons/dotted_off.png", "/resources/icons/dotted.png", "Dotted", 30);
+        
+        btnAddImage = ButtonFactory.createIconButton("/resources/icons/add_image.png", "Add Image", 30);
         currentColor = Color.BLACK;
+        redoStack = new ArrayList<>();
+        
+
+        strokeWidthSlider = new JSlider(JSlider.HORIZONTAL, 1, 20, 1);
 
         setBackground(Color.WHITE);
 
@@ -116,6 +126,8 @@ public class PaintManager extends JPanel {
         this.add(imageExporter);
         this.add(btnSave);
         this.add(btnLoad);
+        this.add(strokeWidthSlider);
+        this.add(btnAddImage);
     }
 
     private void initializeEvents() {
@@ -201,8 +213,20 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!shapes.isEmpty()) {
-                    redoStack.add(shapes.remove(shapes.size() - 1));
-                    shapeContext.setShape(null);
+                    int i = shapes.size()-1;
+                    if(i > 0)
+                        redoStack.add(null);
+                    while (i >= 0) {
+                        shapeContext.setShape(null);
+                        if(shapes.get(i) == null ){
+                            shapes.remove(i);
+                            break;
+                        }
+                        redoStack.add(shapes.remove(i));
+                        i = shapes.size()-1;
+
+                    }
+
                     repaint();
                 }
             }
@@ -211,8 +235,22 @@ public class PaintManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!redoStack.isEmpty()) {
-                    shapes.add(redoStack.remove(redoStack.size() - 1));
-                    shapeContext.setShape(null);
+
+                    int i = redoStack.size()-1;
+                    if(i> 0)
+                        shapes.add(null);
+                    while (i > 0) {
+                        shapeContext.setShape(null);
+                        if(redoStack.get(i) == null ){
+                            
+                            redoStack.remove(i);
+                            break;
+                        }
+                        shapes.add(redoStack.remove(i));
+                        i = redoStack.size()-1;
+
+                    }
+
                     repaint();
                 }
             }
@@ -242,6 +280,21 @@ public class PaintManager extends JPanel {
             }
         });
 
+        btnAddImage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                if (chooser.showOpenDialog(PaintManager.this) == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        backgroundImage = ImageIO.read(chooser.getSelectedFile());
+                        repaint();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
         //Mouse events
         addMouseListener(new MouseAdapter() {
 
@@ -252,6 +305,7 @@ public class PaintManager extends JPanel {
                 if (shapeContext.getShape() == null)
                     return;
 
+
                 Shape shape = shapeContext.getShape();
 
                 shape.setXStarting(e.getX());
@@ -261,7 +315,9 @@ public class PaintManager extends JPanel {
                 shape.setColor(currentColor);
                 shape.setFilled(fillOption.isSelected());
                 shape.setDotted(dottedOption.isSelected());
-
+                shape.setStrokeWidth(strokeWidthSlider.getValue());
+                shapes.add(null);
+                shapes.add(shape);
                 repaint();
             }
 
@@ -276,8 +332,7 @@ public class PaintManager extends JPanel {
                 shape.setCurrentX(e.getX());
                 shape.setCurrentY(e.getY());
 
-                shapes.add(shape);
-                redoStack.clear();
+
                 Shape newShape = shape.clone();
                 shapeContext.setShape(newShape);
 
