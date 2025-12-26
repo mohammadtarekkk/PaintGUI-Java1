@@ -16,6 +16,11 @@ A feature-rich desktop paint application built with Java Swing, implementing var
 
 ---
 
+## 📊 Project UML-Diagram
+<img width="2396" height="1243" alt="PaintMangerUml" src="https://github.com/user-attachments/assets/7c4ccc77-4a21-437d-a41d-3569c91099b0" />
+
+---
+
 ## 🏗️ Project Structure
 
 ```
