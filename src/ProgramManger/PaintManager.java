@@ -205,6 +205,7 @@ public class PaintManager extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 shapes.clear();
                 shapeContext.setShape(null);
+                backgroundImage = null;
                 repaint();
                 redoStack.clear();
             }
